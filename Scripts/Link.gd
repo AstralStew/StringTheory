@@ -38,10 +38,10 @@ func set_positions() -> void:
 
 func thread(thread_owner:Player) -> Test:
 	if is_threaded && thread_owner != null:
-		print_rich("[color=996666]",_debug_name," Thread > Link is already threaded! Cancelling.[/color]")
+		print_rich(_debug_name," Thread > Link is already threaded! Cancelling")
 		return Test.new(false,"Link already threaded")
 	elif !is_threaded && thread_owner == null:
-		print_rich("[color=996666]",_debug_name," Thread > Already unthreaded & no thread owner provided! Cancelling.[/color]")
+		print_rich(_debug_name," Thread > Already unthreaded & no thread owner provided! Cancelling")
 		return Test.new(false,"Link already unthreaded")
 	
 	threaded_by = thread_owner

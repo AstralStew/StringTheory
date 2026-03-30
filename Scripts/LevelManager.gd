@@ -3,26 +3,25 @@ class_name LevelManager extends Node2D
 static var instance : LevelManager = null
 
 @onready var player_prefab := preload("res://Assets/Scenes/player.tscn")
-@onready var evidence_prefab := preload("res://Assets/Scenes/evidence.tscn")
 @onready var pin_prefab := preload("res://Assets/Scenes/pin.tscn")
-@onready var domain_tag := preload("res://Resources/Tags/Tag_Domain.tres")
+#@onready var domain_tag := preload("res://Resources/Tags/Tag_Domain.tres")
 
 
+@onready var theory_manager : TheoryManager = $TheoryManager
 @onready var buttons : Control = $CanvasLayer/MarginContainer/Buttons
 @onready var player_holder : Node = $PlayerHolder
-@onready var evidence_holder : Node = $EvidenceHolder
-@onready var links_holder : Node = $LinksHolder
+@onready var evidence_holder : EvidenceHolder = $EvidenceHolder
+@onready var links_holder : LinkHolder = $LinksHolder
 @onready var pins_holder : Node = $PinsHolder
 @onready var fake_pin : Follower = $FakePin
 @onready var fake_link : FakeLink = $FakeLink
 @onready var raycaster : Raycaster = $Raycaster
 
 @onready var helper_text : RichTextLabel = $CanvasLayer/MarginContainer/Rtl_HelperText
-@onready var domain_text : RichTextLabel = $CanvasLayer/MarginContainer/Rtl_DomainText
+#@onready var domain_text : RichTextLabel = $CanvasLayer/MarginContainer/Rtl_DomainText
 
-@export var domains : Array[Tag] = []
+#@export var domains : Array[Tag] = []
 
-#var _waiting_for_click := false
 
 signal on_mouse_click
 signal on_back_pressed
@@ -30,7 +29,7 @@ signal on_back_pressed
 signal on_player_clicked(player)
 signal on_evidence_clicked(evidence)
 signal on_pin_clicked(pin)
-signal on_link_clicked(pin)
+signal on_link_clicked(link)
 
 
 var _debug_name : String :
@@ -45,16 +44,20 @@ func _ready() -> void:
 		player.on_click_player.connect(on_player_clicked.emit.bind(player))
 	
 	
-	# NOTE -> Only necessary if placed in editor
-	for evidence:Evidence in evidence_holder.get_children():
-		evidence.on_click_evidence.connect(on_evidence_clicked.emit.bind(evidence))
-		#evidence.add_to_group("Evidence")
+	evidence_holder.on_evidence_clicked.connect(on_evidence_clicked.emit)
+	
+	
 	
 	# NOTE -> Only necessary if placed in editor
 	for pin:Pin in pins_holder.get_children():
 		pin.on_click_pin.connect(on_pin_clicked.emit.bind(pin))
 
 
+	links_holder.on_link_clicked.connect(on_link_clicked.emit)
+	
+	
+	
+	evidence_holder.on_evidence_created.connect(theory_manager.check_evidence_for_domains.bind(true))
 
 
 
@@ -70,68 +73,17 @@ func create_player() -> Player:
 	var _new_player : Player = player_prefab.instantiate()
 	_new_player.setup()
 	player_holder.add_child(_new_player)
-	#_new_player.add_to_group("Players")
 	return _new_player
 
-func create_evidence() -> Evidence:
-	var _new_evidence : Evidence = evidence_prefab.instantiate()
-	_new_evidence.setup()
-	evidence_holder.add_child(_new_evidence)
-	_new_evidence.add_to_group("Evidence")
-	for _tag in _new_evidence.tags:
-		if has_domain(_tag).result:
-			_new_evidence.add_tag(domain_tag)
-			break
-	return _new_evidence
 
 func create_pin() -> Pin:
 	var _new_pin : Pin = pin_prefab.instantiate()
 	_new_pin.setup()
 	_new_pin.add_to_group("Pins")
-	#pins_holder.add_child(_new_pin) # pins live inside evidence normally
 	return _new_pin
 
-func create_link(pin1:Pin,pin2:Pin) -> Link:
-	var _new_link = Link.new(pin1,pin2)
-	links_holder.add_child(_new_link)
-	return _new_link
 
 #endregion
-
-#region Domain functions
-
-func add_domain(_tag:Tag) -> Test:
-	if has_domain(_tag).result:
-		print_rich(_debug_name," AddDomain > Tag '"+_tag.key+"="+str(_tag.value)+"' already present, cancelling")
-		return Test.new(false,"Tag '"+_tag.key+"="+str(_tag.value)+"' already present")
-	else:
-		domains.append(_tag)
-		_apply_domains()
-		return Test.new(true,"")
-
-func has_domain(_tag:Tag) -> Test:
-	print_rich(_debug_name," HasDomain > Checking tag '"+_tag.key+"="+str(_tag.value)+"'...")
-	if domains.has(_tag):
-		print_rich(_debug_name," HasDomain > Found '"+_tag.key+"="+str(_tag.value)+"', returning true")
-		return Test.new(true,"")
-	
-	print_rich(_debug_name," HasDomain > Did not find '"+_tag.key+"="+str(_tag.value)+"', returning false")
-	return Test.new(false,"No matching results")
-
-func _apply_domains() -> void:
-	for evidence:Evidence in get_tree().get_nodes_in_group("Evidence"):
-		if evidence.has_tag(domain_tag).result:
-			continue
-		for domain in domains:
-			if evidence.has_tag(domain).result:
-				evidence.add_tag(domain_tag)
-				break
-	
-	# Change domain text
-	var _domain_list : String 
-	for domain in domains:
-		_domain_list += str(domain.value) + " ("+domain.key+")"
-	domain_text.text = "[b]Domains:[/b]  " + _domain_list
 
 
 func _add_random_domain_on_button_press() -> void:
@@ -149,9 +101,8 @@ func _add_random_domain_on_button_press() -> void:
 		6: _tag = load("res://Resources/Tags/Tag_Type_Person.tres")
 	
 	print_rich(_debug_name," AddRandomDomain > Adding new domain '"+_tag.key+"="+str(_tag.value)+"'")
-	add_domain(_tag)
-	
-#endregion
+	theory_manager.add_domain(_tag)
+
 
 
 
@@ -165,7 +116,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		on_back_pressed.emit()
 	
 	# Wait for mouse click
-	#if !_waiting_for_click: return
 	if event is InputEventMouseButton and event.is_action_pressed("mouse_left_click"):
 		on_mouse_click.emit()
 
@@ -204,23 +154,9 @@ func _reset() -> void:
 
 #region Evidence functions 
 
-func _create_evidence_on_button_press() -> void:
+func _create_evidence_on_button_press(_repeat_until_esc:bool = false) -> void:
 	buttons.visible = false
-	_set_helper_text("Click to place an evidence")
-	#_waiting_for_click = true
-	
-	var signal_result = await _signal_fired_before_escape(on_mouse_click)
-	if signal_result[0]:
-		var _new_evidence : Evidence = create_evidence()
-		_new_evidence.global_position = get_global_mouse_position()
-		_new_evidence.on_click_evidence.connect(on_evidence_clicked.emit.bind(_new_evidence))
-	
-	#_waiting_for_click = false
-	_reset()
-
-func _create_evidence_repeating_on_button_press() -> void:
-	buttons.visible = false
-	_set_helper_text("Click to place evidence (repeat until escape)")
+	_set_helper_text("Click to place evidence" + " (repeats until escape)" if _repeat_until_esc else "")
 	
 	var signal_result : Array
 	var _evidence : Evidence = null
@@ -231,9 +167,9 @@ func _create_evidence_repeating_on_button_press() -> void:
 			_reset()
 			return
 		
-		_evidence = create_evidence()
-		_evidence.global_position = get_global_mouse_position()
-		_evidence.on_click_evidence.connect(on_evidence_clicked.emit.bind(_evidence))
+		evidence_holder.create_evidence_at_position(get_global_mouse_position())
+		
+		if !_repeat_until_esc: break
 	
 	_reset()
 
@@ -252,17 +188,12 @@ func _hide_evidence_on_button_press() -> void:
 			return
 		_evidence = signal_result[1][0]
 		
-		#Ignore if the evidence is already hidden
-		if _evidence.is_hidden:
-			_set_helper_text("Evidence is already hidden, choose again")
+		# Attempt to hide the evidence
+		var _test = _evidence.hide_me()
+		if !_test.result:
+			_set_helper_text(_test.reason+", choose again")
 			continue
 		
-		#Ignore if the pin is occupied
-		if _evidence.occupied:
-			_set_helper_text("Evidence is occupied, choose again")
-			continue
-		
-		_evidence.is_hidden = true
 		break
 	
 	_reset()
@@ -283,12 +214,12 @@ func _reveal_evidence_on_button_press() -> void:
 			return
 		_evidence = signal_result[1][0]
 		
-		#Ignore if the evidence is already hidden
-		if !_evidence.is_hidden:
-			_set_helper_text("Evidence is already revealed, choose again")
+		# Attempt to reveal the evidence
+		var _test = _evidence.reveal_me()
+		if !_test.result:
+			_set_helper_text(_test.reason+", choose again")
 			continue
 		
-		_evidence.is_hidden = false
 		break
 	
 	_reset()
@@ -303,7 +234,6 @@ func _reveal_evidence_on_button_press() -> void:
 func _create_pin_on_button_press() -> void:
 	buttons.visible = false
 	_set_helper_text("Click to place a pin")
-	#_waiting_for_click = true
 	fake_pin.follow()
 	
 	var signal_result = await _signal_fired_before_escape(on_mouse_click)
@@ -314,7 +244,6 @@ func _create_pin_on_button_press() -> void:
 		_new_pin.on_click_pin.connect(on_pin_clicked.emit.bind(_new_pin))
 		_new_pin.global_position = get_global_mouse_position()
 
-	#_waiting_for_click = false
 	_reset()
 
 
@@ -366,20 +295,12 @@ func _create_pin_on_evidence_on_button_press() -> void:
 		var _new_pin : Pin = create_pin()
 		_new_pin.on_click_pin.connect(on_pin_clicked.emit.bind(_new_pin))
 		_evidence.register_pin(_new_pin)
-		#_evidence.pins_holder.add_child(_new_pin)
-		#_evidence.draggable.on_moved.connect(_new_pin.draggable.on_moved.emit)
-		#_new_pin.evidence = _evidence
 		_new_pin.global_position = raycaster.collision_point
 		break
 	
 	
 	_reset()
 
-
-
-
-#func _on_pin_click_debug() -> void:
-	#print("[LevelManager] Pin clicked debug")
 
 #endregion
 
@@ -424,29 +345,38 @@ func _create_link_on_button_press() -> void:
 			return
 		_pin2 = signal_result[1][0]
 		
-		# Ignore if the pin is at max links
-		if _pin2.full:
-			_set_helper_text("Pin is at max links, choose again")
-			continue
-		# Ignore if first pin is clicked again
-		if _pin2 == _pin1:
-			_set_helper_text("Same pin clicked, choose again")
-			print("[LevelManager] Same pin clicked, ignoring.")
-			continue
-		# Ignore if its already linked here
-		if _pin1.is_linked_to_pin(_pin2):
-			_set_helper_text("Pin already linked here, choose again")
-			print("[LevelManager] Pin already linked here, ignoring.")
-			continue
-		# Ignore if its on the same evidence
-		if _pin1.evidence == _pin2.evidence:
-			_set_helper_text("Pins are on same evidence, choose again")
-			print("[LevelManager] Pin is on the same evidence, ignoring.")
+		## Ignore if the pin is at max links
+		#if _pin2.full:
+			#_set_helper_text("Pin is at max links, choose again")
+			#continue
+		## Ignore if first pin is clicked again
+		#if _pin2 == _pin1:
+			#_set_helper_text("Same pin clicked, choose again")
+			#print("[LevelManager] Same pin clicked, ignoring.")
+			#continue
+		## Ignore if its already linked here
+		#if _pin1.is_linked_to_pin(_pin2):
+			#_set_helper_text("Pin already linked here, choose again")
+			#print("[LevelManager] Pin already linked here, ignoring.")
+			#continue
+		## Ignore if its on the same evidence
+		#if _pin1.evidence == _pin2.evidence:
+			#_set_helper_text("Pins are on same evidence, choose again")
+			#print("[LevelManager] Pin is on the same evidence, ignoring.")
+			#continue
+		
+		
+		# Attempt to link the pins
+		var _test = links_holder.create_link(_pin1,_pin2)
+		if !_test.result:
+			_set_helper_text(_test.reason+", choose again")
 			continue
 		
-		# Create a link to the second pin
-		var _new_link = create_link(_pin1,_pin2)
-		_new_link.on_click_link.connect(on_link_clicked.emit.bind(_new_link))
+		
+		
+		## Create a link to the second pin
+		#var _new_link = create_link(_pin1,_pin2)
+		#_new_link.on_click_link.connect(on_link_clicked.emit.bind(_new_link))
 		
 		_reset()
 		break
@@ -549,32 +479,38 @@ func _create_link_by_aim_on_button_press() -> void:
 			_new_pin.global_position = raycaster.collision_point
 			_pin2 = _new_pin
 		
-		# Check if we have collided with evidence
+		# Check if we have collided with pin
 		if raycaster.collision_object is Pin:
 			_pin2 = raycaster.collision_object
-			# Ignore if the pin is at max links
-			if _pin2.full:
-				_set_helper_text("Pin is at max links, choose again")
-				continue
-			# Ignore if first pin is clicked again
-			if _pin2 == _pin1:
-				_set_helper_text("Same pin clicked, choose again")
-				print("[LevelManager] Same pin clicked, ignoring.")
-				continue
-			# Ignore if its already linked here
-			if _pin1.is_linked_to_pin(_pin2):
-				_set_helper_text("Pin already linked here, choose again")
-				print("[LevelManager] Pin already linked here, ignoring.")
-				continue
-			# Ignore if its on the same evidence
-			if _pin1.evidence == _pin2.evidence:
-				_set_helper_text("Pins are on same evidence, choose again")
-				print("[LevelManager] Pin is on the same evidence, ignoring.")
-				continue
+			## Ignore if the pin is at max links
+			#if _pin2.full:
+				#_set_helper_text("Pin is at max links, choose again")
+				#continue
+			## Ignore if first pin is clicked again
+			#if _pin2 == _pin1:
+				#_set_helper_text("Same pin clicked, choose again")
+				#print("[LevelManager] Same pin clicked, ignoring.")
+				#continue
+			## Ignore if its already linked here
+			#if _pin1.is_linked_to_pin(_pin2):
+				#_set_helper_text("Pin already linked here, choose again")
+				#print("[LevelManager] Pin already linked here, ignoring.")
+				#continue
+			## Ignore if its on the same evidence
+			#if _pin1.evidence == _pin2.evidence:
+				#_set_helper_text("Pins are on same evidence, choose again")
+				#print("[LevelManager] Pin is on the same evidence, ignoring.")
+				#continue
 		
-		# Create a link to the second pin
-		var _new_link = create_link(_pin1,_pin2)
-		_new_link.on_click_link.connect(on_link_clicked.emit.bind(_new_link))
+		# Attempt to link the pins
+		var _test = links_holder.create_link(_pin1,_pin2)
+		if !_test.result:
+			_set_helper_text(_test.reason+", choose again")
+			continue
+		
+		## Create a link to the second pin
+		#var _new_link = create_link(_pin1,_pin2)
+		#_new_link.on_click_link.connect(on_link_clicked.emit.bind(_new_link))
 		
 		break
 		
@@ -605,12 +541,18 @@ func _thread_link_on_button_press() -> void:
 			return
 		_link = signal_result[1][0]
 		
-		# Ignore if the link is already threaded
-		if _link.is_threaded:
-			_set_helper_text("Link is already threaded, choose again")
+		# Attempt to thread the link
+		var _test = _link.thread(_player) 
+		if !_test.result:
+			_set_helper_text(_test.reason+", choose again")
 			continue
 		
-		_link.thread(_player)
+		## Ignore if the link is already threaded
+		#if _link.is_threaded:
+			#_set_helper_text("Link is already threaded, choose again")
+			#continue
+		#
+		#_link.thread(_player)
 		break
 	
 	_reset()
@@ -618,7 +560,6 @@ func _thread_link_on_button_press() -> void:
 
 func _unthread_link_on_button_press() -> void:
 	buttons.visible = false
-	_set_helper_text("Click the owning player")
 	
 	# Select a link
 	_set_helper_text("Select a link")
@@ -632,12 +573,18 @@ func _unthread_link_on_button_press() -> void:
 			return
 		_link = signal_result[1][0]
 		
-		# Ignore if the link is already unthreaded
-		if !_link.is_threaded:
-			_set_helper_text("Link is already unthreaded, choose again")
+		# Attempt to unthread the link
+		var _test = _link.thread(null) 
+		if !_test.result:
+			_set_helper_text(_test.reason+", choose again")
 			continue
 		
-		_link.thread(null)
+		## Ignore if the link is already unthreaded
+		#if !_link.is_threaded:
+			#_set_helper_text("Link is already unthreaded, choose again")
+			#continue
+		#
+		#_link.thread(null)
 		break
 	
 	_reset()
@@ -656,7 +603,6 @@ func _create_player_on_button_press() -> void:
 	var signal_result = await _signal_fired_before_escape(on_mouse_click)
 	if signal_result[0]:
 		var _new_player : Player = create_player()
-		#_new_player.player_colour = Color.from_hsv(randf() * 360,1,1)
 		_new_player.global_position = get_global_mouse_position()
 		_new_player.on_click_player.connect(on_player_clicked.emit.bind(_new_player))
 		
@@ -684,10 +630,8 @@ func _create_player_on_pin_on_button_press() -> void:
 		break
 	
 	var _new_player : Player = create_player()
-	#_new_player.player_colour = Color.from_hsv(randf() * 360,1,1)
 	_new_player.on_click_player.connect(on_player_clicked.emit.bind(_new_player))
 	_new_player.move_to_pin(_pin1)
-	#_new_player._occupy_pin(_pin1)
 	
 	_reset()
 
