@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Tag" format=3 uid="uid://38m4fheg2aug"]
+
+[ext_resource type="Script" uid="uid://e81200kmucw" path="res://Scripts/Tag.gd" id="1_3x022"]
+
+[resource]
+resource_name = "Type_Location"
+script = ExtResource("1_3x022")
+key = &"Type"
+value = "Location"
+metadata/_custom_type_script = "uid://e81200kmucw"

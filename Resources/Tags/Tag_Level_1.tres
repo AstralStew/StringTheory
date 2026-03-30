@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Tag" format=3 uid="uid://do7pnvk2smwdm"]
+
+[ext_resource type="Script" uid="uid://e81200kmucw" path="res://Scripts/Tag.gd" id="1_l06ec"]
+
+[resource]
+resource_name = "Level_1"
+script = ExtResource("1_l06ec")
+key = &"Level"
+value = "1"
+metadata/_custom_type_script = "uid://e81200kmucw"

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ChainObjective" format=3 uid="uid://dpxh4pkcmb4sj"]
+
+[ext_resource type="Script" uid="uid://e81200kmucw" path="res://Scripts/Tag.gd" id="1_b0g8x"]
+[ext_resource type="Resource" uid="uid://b7gylch3ijaj" path="res://Resources/Tags/Tag_Type_Item.tres" id="2_uv506"]
+[ext_resource type="Resource" uid="uid://cmingnehhyxs3" path="res://Resources/Tags/Tag_Domain.tres" id="3_8pm1e"]
+[ext_resource type="Script" uid="uid://dgm1mg684esqs" path="res://Scripts/Objectives/ChainObjective.gd" id="4_rjlqn"]
+
+[resource]
+script = ExtResource("4_rjlqn")
+required_tags = Dictionary[ExtResource("1_b0g8x"), int]({
+ExtResource("2_uv506"): 1,
+ExtResource("3_8pm1e"): 1
+})
+required_length = 3
+requires_exact_length = true
+metadata/_custom_type_script = "uid://dgm1mg684esqs"

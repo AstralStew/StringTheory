@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Tag" format=3 uid="uid://btfiw74sf5e0c"]
+
+[ext_resource type="Script" uid="uid://e81200kmucw" path="res://Scripts/Tag.gd" id="1_t3a44"]
+
+[resource]
+resource_name = "Type_Person"
+script = ExtResource("1_t3a44")
+key = &"Type"
+value = "Person"
+metadata/_custom_type_script = "uid://e81200kmucw"

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ChainObjective" format=3 uid="uid://dvxm66y3se407"]
+
+[ext_resource type="Script" uid="uid://e81200kmucw" path="res://Scripts/Tag.gd" id="1_6scnp"]
+[ext_resource type="Resource" uid="uid://ddl8w47oh11sx" path="res://Resources/Tags/Tag_Colour_Purple.tres" id="2_6scnp"]
+[ext_resource type="Script" uid="uid://dgm1mg684esqs" path="res://Scripts/Objectives/ChainObjective.gd" id="3_el127"]
+
+[resource]
+script = ExtResource("3_el127")
+required_tags = Dictionary[ExtResource("1_6scnp"), int]({
+ExtResource("2_6scnp"): 1
+})
+required_length = 3
+requires_exact_length = true
+metadata/_custom_type_script = "uid://dgm1mg684esqs"

@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://dgrjbju11on7d"]
+
+[ext_resource type="Script" uid="uid://diqwu7mon23bi" path="res://Scripts/Pin.gd" id="1_hbb12"]
+[ext_resource type="Texture2D" uid="uid://dwnwai50lceie" path="res://Assets/Sprites/Pin.png" id="2_tvi8x"]
+[ext_resource type="Script" uid="uid://dqmrn3j54wy1y" path="res://Scripts/Draggable.gd" id="3_a1l1a"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w0eeu"]
+radius = 18.66376
+
+[node name="Pin" type="Node2D" unique_id=1646836186]
+z_index = 30
+z_as_relative = false
+script = ExtResource("1_hbb12")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1224908607]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_tvi8x")
+
+[node name="Draggable" type="Area2D" parent="." unique_id=1630127971]
+scale = Vector2(1.8225001, 1.8225001)
+collision_layer = 65536
+collision_mask = 0
+script = ExtResource("3_a1l1a")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable" unique_id=2138251074]
+shape = SubResource("CircleShape2D_w0eeu")
+
+[connection signal="input_event" from="Draggable" to="Draggable" method="_on_input_event"]

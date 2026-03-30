@@ -1,0 +1,357 @@
+[gd_scene format=3 uid="uid://comd1r7u65c6s"]
+
+[ext_resource type="Script" uid="uid://c1doqmpit6sn0" path="res://Scripts/Evidence.gd" id="1_of8c4"]
+[ext_resource type="Texture2D" uid="uid://bivi3ck3xuuw2" path="res://Assets/EvidenceS_BlueItem_BrokenLaptop.png" id="2_shg2q"]
+[ext_resource type="Script" uid="uid://dqmrn3j54wy1y" path="res://Scripts/Draggable.gd" id="3_rr8wh"]
+[ext_resource type="Texture2D" uid="uid://ba0tn37ja1wca" path="res://Assets/Sprites/LocationSolo.png" id="6_7yyx8"]
+[ext_resource type="Texture2D" uid="uid://di4apaduubk7n" path="res://Assets/Sprites/EntityIcon_lr.png" id="7_qas6m"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_shg2q"]
+size = Vector2(118, 118)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_shg2q"]
+a = Vector2(-56, -56)
+b = Vector2(56, -56)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_rr8wh"]
+a = Vector2(-56, -56)
+b = Vector2(-56, 56)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_7yyx8"]
+a = Vector2(56, -56)
+b = Vector2(56, 56)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_qas6m"]
+a = Vector2(-56, 56)
+b = Vector2(56, 56)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_of8c4"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+shadow_color = Color(0, 0, 0, 0.3137255)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_shg2q"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rr8wh"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7yyx8"]
+content_margin_left = 6.0
+content_margin_top = 0.0
+content_margin_right = 6.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ie63s"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+corner_detail = 5
+shadow_color = Color(0, 0, 0, 0.26666668)
+shadow_size = 1
+shadow_offset = Vector2(0, 0.5)
+
+[node name="Evidence" type="Node2D" unique_id=782376683]
+z_index = 10
+z_as_relative = false
+script = ExtResource("1_of8c4")
+max_pins = 0
+
+[node name="Draggable" type="Area2D" parent="." unique_id=552925102]
+scale = Vector2(1.8225001, 1.8225001)
+collision_layer = 256
+collision_mask = 0
+script = ExtResource("3_rr8wh")
+can_drag = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable" unique_id=195126170]
+shape = SubResource("RectangleShape2D_shg2q")
+
+[node name="Border" type="Area2D" parent="." unique_id=1730199411]
+scale = Vector2(1.8225001, 1.8225001)
+collision_layer = 512
+collision_mask = 0
+input_pickable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Border" unique_id=1049116258]
+z_index = 50
+shape = SubResource("SegmentShape2D_shg2q")
+debug_color = Color(1, 0, 1, 0.5411765)
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Border" unique_id=1023131309]
+z_index = 50
+shape = SubResource("SegmentShape2D_rr8wh")
+debug_color = Color(1, 0, 1, 0.5411765)
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Border" unique_id=1670476916]
+z_index = 50
+shape = SubResource("SegmentShape2D_7yyx8")
+debug_color = Color(1, 0, 1, 0.5411765)
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Border" unique_id=1059719734]
+z_index = 50
+shape = SubResource("SegmentShape2D_qas6m")
+debug_color = Color(1, 0, 1, 0.5411765)
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1291002899]
+visible = false
+scale = Vector2(0.36, 0.36)
+texture = ExtResource("2_shg2q")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1261761794]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_of8c4")
+
+[node name="MC_Content" type="MarginContainer" parent="PanelContainer" unique_id=909492304]
+visible = false
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ColorRect" type="ColorRect" parent="PanelContainer/MC_Content" unique_id=981642186]
+layout_mode = 2
+mouse_filter = 1
+color = Color(0.8776157, 0.8776158, 0.8776157, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/MC_Content" unique_id=983800880]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MC_Content/MarginContainer" unique_id=253509415]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 4
+
+[node name="ColourIcon" type="Panel" parent="PanelContainer/MC_Content/MarginContainer/HBoxContainer" unique_id=486496379]
+z_index = 1
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_shg2q")
+
+[node name="TypeIcon" type="TextureRect" parent="PanelContainer/MC_Content/MarginContainer/HBoxContainer/ColourIcon" unique_id=1084014174]
+modulate = Color(1, 1, 1, 0.70980394)
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(14, 14)
+texture = ExtResource("6_7yyx8")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MC_Content/MarginContainer/HBoxContainer" unique_id=962281505]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="PC_CardName" type="PanelContainer" parent="PanelContainer/MC_Content/MarginContainer/HBoxContainer/VBoxContainer" unique_id=28989600]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_rr8wh")
+
+[node name="Rtl_CardName" type="RichTextLabel" parent="PanelContainer/MC_Content/MarginContainer/HBoxContainer/VBoxContainer/PC_CardName" unique_id=1504155277]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 1
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7yyx8")
+bbcode_enabled = true
+text = "CARD NAME"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="PC_CardTag" type="PanelContainer" parent="PanelContainer/MC_Content/MarginContainer/HBoxContainer/VBoxContainer" unique_id=960513647]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_rr8wh")
+
+[node name="Rtl_CardTag" type="RichTextLabel" parent="PanelContainer/MC_Content/MarginContainer/HBoxContainer/VBoxContainer/PC_CardTag" unique_id=1881048235]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+mouse_filter = 1
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 8
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7yyx8")
+bbcode_enabled = true
+text = "Card tag"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Rtl_Level" type="RichTextLabel" parent="PanelContainer/MC_Content/MarginContainer/HBoxContainer" unique_id=2012895431]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7yyx8")
+bbcode_enabled = true
+text = "2"
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+
+[node name="DomainTag" type="Panel" parent="PanelContainer/MC_Content/MarginContainer" unique_id=193462077]
+visible = false
+self_modulate = Color(0, 0, 0, 1)
+z_index = 1
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_ie63s")
+
+[node name="DomainIcon" type="TextureRect" parent="PanelContainer/MC_Content/MarginContainer/DomainTag" unique_id=574869240]
+custom_minimum_size = Vector2(22, 22)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -11.0
+offset_top = -11.0
+offset_right = 11.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(14, 14)
+texture = ExtResource("7_qas6m")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="Rtl_Domain" type="RichTextLabel" parent="PanelContainer/MC_Content/MarginContainer/DomainTag" unique_id=258136329]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -22.0
+offset_top = -31.0
+offset_right = 23.0
+offset_bottom = -22.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 0
+size_flags_vertical = 4
+mouse_filter = 1
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/normal_font_size = 4
+theme_override_font_sizes/bold_font_size = 4
+theme_override_font_sizes/bold_italics_font_size = 4
+theme_override_font_sizes/italics_font_size = 4
+theme_override_font_sizes/mono_font_size = 6
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7yyx8")
+bbcode_enabled = true
+text = "D O M A I N"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+
+[node name="MC_Hidden" type="MarginContainer" parent="PanelContainer" unique_id=1075289871]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ColorRect" type="ColorRect" parent="PanelContainer/MC_Hidden" unique_id=2010577353]
+visible = false
+layout_mode = 2
+mouse_filter = 1
+color = Color(0.70796615, 0.7079667, 0.7079661, 1)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/MC_Hidden" unique_id=1736835946]
+clip_contents = false
+layout_mode = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 136
+bbcode_enabled = true
+text = "?"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PinsHolder" type="Node2D" parent="." unique_id=550050227]
+
+[connection signal="input_event" from="Draggable" to="Draggable" method="_on_input_event"]
+[connection signal="mouse_entered" from="Draggable" to="Draggable" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Draggable" to="Draggable" method="_on_mouse_exited"]

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Tag" format=3 uid="uid://b7gylch3ijaj"]
+
+[ext_resource type="Script" uid="uid://e81200kmucw" path="res://Scripts/Tag.gd" id="1_03ye0"]
+
+[resource]
+resource_name = "Type_Item"
+script = ExtResource("1_03ye0")
+key = &"Type"
+value = "Item"
+metadata/_custom_type_script = "uid://e81200kmucw"

@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://dijxp5gwbiu0r"]
+
+[ext_resource type="Script" uid="uid://dqmrn3j54wy1y" path="res://Scripts/Draggable.gd" id="1_6cd4h"]
+[ext_resource type="Script" uid="uid://cjcqyom1hhn7x" path="res://Scripts/Player.gd" id="1_7dd06"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ga1kr"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+corner_detail = 5
+shadow_size = 5
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7dd06"]
+radius = 7.701327
+
+[node name="Player" type="Node2D" unique_id=481904291]
+z_index = 40
+z_as_relative = false
+script = ExtResource("1_7dd06")
+
+[node name="Icon" type="Panel" parent="." unique_id=1106375442]
+z_index = 1
+custom_minimum_size = Vector2(28, 28)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(14, 14)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ga1kr")
+
+[node name="Draggable" type="Area2D" parent="." unique_id=1881886256]
+scale = Vector2(1.8225001, 1.8225001)
+collision_mask = 0
+script = ExtResource("1_6cd4h")
+can_drag = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable" unique_id=314676891]
+shape = SubResource("CircleShape2D_7dd06")
+
+[connection signal="input_event" from="Draggable" to="Draggable" method="_on_input_event"]

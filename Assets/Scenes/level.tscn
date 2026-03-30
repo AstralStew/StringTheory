@@ -1,0 +1,403 @@
+[gd_scene format=3 uid="uid://ccccujmhte132"]
+
+[ext_resource type="Script" uid="uid://bpxhbyh0pejoi" path="res://Scripts/ZoomableCamera.gd" id="1_8kw0n"]
+[ext_resource type="Script" uid="uid://ba3mi45c5xbwj" path="res://Scripts/LevelManager.gd" id="1_x4t65"]
+[ext_resource type="Texture2D" uid="uid://bd5kntg06idvm" path="res://Assets/chipboard.png" id="2_8kw0n"]
+[ext_resource type="Shader" uid="uid://dkbgxh6xqvj4f" path="res://Assets/Shaders/dotmatrix.gdshader" id="3_shbny"]
+[ext_resource type="PackedScene" uid="uid://comd1r7u65c6s" path="res://Assets/Scenes/evidence.tscn" id="4_ga1kr"]
+[ext_resource type="PackedScene" uid="uid://dijxp5gwbiu0r" path="res://Assets/Scenes/player.tscn" id="4_w0eeu"]
+[ext_resource type="Script" uid="uid://v8sisfitccxh" path="res://Scripts/Link.gd" id="5_f1v21"]
+[ext_resource type="Texture2D" uid="uid://dwnwai50lceie" path="res://Assets/Sprites/Pin.png" id="7_ge02r"]
+[ext_resource type="PackedScene" uid="uid://dgrjbju11on7d" path="res://Assets/Scenes/pin.tscn" id="7_x4t65"]
+[ext_resource type="Script" uid="uid://ce07fm435c0vr" path="res://Scripts/Follower.gd" id="7_yi8c2"]
+[ext_resource type="Script" uid="uid://celh2v3lsit3x" path="res://Scripts/FakeLink.gd" id="9_mosf5"]
+[ext_resource type="Script" uid="uid://b0s0k2au70ro8" path="res://Scripts/Raycaster.gd" id="9_yi8c2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f1v21"]
+shader = ExtResource("3_shbny")
+shader_parameter/size = 720.0
+shader_parameter/color = Color(0, 0, 0, 1)
+
+[sub_resource type="Gradient" id="Gradient_mosf5"]
+interpolation_mode = 2
+interpolation_color_space = 2
+offsets = PackedFloat32Array(0.26661515, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_shbny"]
+gradient = SubResource("Gradient_mosf5")
+width = 450
+height = 450
+use_hdr = true
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0.25)
+
+[sub_resource type="Gradient" id="Gradient_f1v21"]
+offsets = PackedFloat32Array(0.7182741, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_nsji4"]
+gradient = SubResource("Gradient_f1v21")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.55, 0.55)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_fnxxm"]
+texture = SubResource("GradientTexture2D_nsji4")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w0eeu"]
+
+[node name="LevelManager" type="Node2D" unique_id=1489875979]
+script = ExtResource("1_x4t65")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=31139128]
+
+[node name="Pixelgrid" type="ColorRect" parent="CanvasLayer" unique_id=897822560]
+visible = false
+material = SubResource("ShaderMaterial_f1v21")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer" unique_id=1206292625]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Buttons" type="Control" parent="CanvasLayer/MarginContainer" unique_id=2099002802]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="LeftButtons" type="VBoxContainer" parent="CanvasLayer/MarginContainer/Buttons" unique_id=1137756177]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 1
+offset_right = 226.0
+offset_bottom = 680.0
+size_flags_horizontal = 0
+
+[node name="HSeparator4" type="HSeparator" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=1147639316]
+layout_mode = 2
+
+[node name="Btn_CreateEvidence" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=546142383]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Create evidence"
+
+[node name="Btn_CreateEvidenceRepeating" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=1105247937]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Create evidence (repeating)"
+
+[node name="Btn_HideEvidence" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=1831444182]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Hide evidence"
+
+[node name="Btn_RevealEvidence" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=1683986453]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Reveal evidence"
+
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=16381787]
+layout_mode = 2
+
+[node name="Btn_CreatePin" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=1944871643]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Create pin"
+
+[node name="Btn_CreatePinOnEvidence" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=1582599806]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Create pin (on evidence)"
+
+[node name="HSeparator2" type="HSeparator" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=1187462716]
+layout_mode = 2
+
+[node name="Btn_CreateLink" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=1944900002]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Create link"
+
+[node name="Btn_CreateLinkAiming" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=2082040303]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Create link (aiming)"
+
+[node name="Btn_ThreadLink" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=985868450]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Thread link"
+
+[node name="Btn_UnthreadLink" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=1368393263]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Unthread link"
+
+[node name="HSeparator3" type="HSeparator" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=771575577]
+layout_mode = 2
+
+[node name="Btn_CreatePlayer" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=137786018]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Create player
+"
+
+[node name="Btn_CreatePlayerOnPin" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=869176658]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Create player (on pin)
+"
+
+[node name="Btn_MovePlayerForced" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=362024225]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Move player (forced)"
+
+[node name="Btn_Backtrack" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=1831045278]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Backtrack player"
+
+[node name="Btn_BacktrackRepeating" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=1897852895]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Backtrack player (repeating)"
+
+[node name="HSeparator5" type="HSeparator" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=1462594720]
+layout_mode = 2
+
+[node name="Btn_TestChain" type="Button" parent="CanvasLayer/MarginContainer/Buttons/LeftButtons" unique_id=33605715]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Test chain"
+
+[node name="RightButtons" type="VBoxContainer" parent="CanvasLayer/MarginContainer/Buttons" unique_id=813671774]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_bottom = 680.0
+grow_horizontal = 0
+size_flags_horizontal = 8
+
+[node name="HSeparator4" type="HSeparator" parent="CanvasLayer/MarginContainer/Buttons/RightButtons" unique_id=1364573807]
+layout_mode = 2
+
+[node name="Btn_AddRandomDomain" type="Button" parent="CanvasLayer/MarginContainer/Buttons/RightButtons" unique_id=1085903840]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Add Domain (random)"
+
+[node name="Rtl_HelperText" type="RichTextLabel" parent="CanvasLayer/MarginContainer" unique_id=2022375542]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.4627451)
+theme_override_constants/shadow_outline_size = 12
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/normal_font_size = 36
+theme_override_font_sizes/bold_font_size = 36
+bbcode_enabled = true
+text = "Click to place a pin"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Rtl_DomainText" type="RichTextLabel" parent="CanvasLayer/MarginContainer" unique_id=686630781]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 22
+theme_override_font_sizes/bold_font_size = 22
+theme_override_font_sizes/bold_italics_font_size = 22
+theme_override_font_sizes/italics_font_size = 22
+bbcode_enabled = true
+text = "[b]Domains:[/b]  "
+horizontal_alignment = 1
+
+[node name="ZoomableCamera" type="Camera2D" parent="." unique_id=335067561 node_paths=PackedStringArray("follow_target")]
+limit_left = -6000
+limit_top = -4000
+limit_right = 6000
+limit_bottom = 4000
+editor_draw_limits = true
+script = ExtResource("1_8kw0n")
+mode = 1
+follow_target = NodePath("../PlayerHolder/Player")
+metadata/_custom_type_script = "uid://bpxhbyh0pejoi"
+
+[node name="Background" type="Node2D" parent="." unique_id=655521663]
+
+[node name="Background" type="Sprite2D" parent="Background" unique_id=325766286]
+modulate = Color(0.93, 0.853275, 0.79050004, 1)
+position = Vector2(-4125, -2736)
+scale = Vector2(2, 2)
+texture = ExtResource("2_8kw0n")
+
+[node name="Background2" type="Sprite2D" parent="Background" unique_id=512152214]
+modulate = Color(0.93, 0.853275, 0.79050004, 1)
+position = Vector2(-4125, -18)
+scale = Vector2(2, 2)
+texture = ExtResource("2_8kw0n")
+
+[node name="Background3" type="Sprite2D" parent="Background" unique_id=455308788]
+modulate = Color(0.93, 0.853275, 0.79050004, 1)
+position = Vector2(-29, -2736)
+scale = Vector2(2, 2)
+texture = ExtResource("2_8kw0n")
+
+[node name="Background5" type="Sprite2D" parent="Background" unique_id=793969071]
+modulate = Color(0.93, 0.853275, 0.79050004, 1)
+position = Vector2(-4125, 2708)
+scale = Vector2(2, 2)
+texture = ExtResource("2_8kw0n")
+
+[node name="Background7" type="Sprite2D" parent="Background" unique_id=1958390672]
+modulate = Color(0.93, 0.853275, 0.79050004, 1)
+position = Vector2(4067, -2736)
+scale = Vector2(2, 2)
+texture = ExtResource("2_8kw0n")
+
+[node name="Background8" type="Sprite2D" parent="Background" unique_id=1373932903]
+modulate = Color(0.93, 0.853275, 0.79050004, 1)
+position = Vector2(4067, -18)
+scale = Vector2(2, 2)
+texture = ExtResource("2_8kw0n")
+
+[node name="Background9" type="Sprite2D" parent="Background" unique_id=2033946301]
+modulate = Color(0.93, 0.853275, 0.79050004, 1)
+position = Vector2(4067, 2708)
+scale = Vector2(2, 2)
+texture = ExtResource("2_8kw0n")
+
+[node name="Background6" type="Sprite2D" parent="Background" unique_id=1154521453]
+modulate = Color(0.93, 0.853275, 0.79050004, 1)
+position = Vector2(-29, 2708)
+scale = Vector2(2, 2)
+texture = ExtResource("2_8kw0n")
+
+[node name="Background4" type="Sprite2D" parent="Background" unique_id=1750952917]
+modulate = Color(0.93, 0.853275, 0.79050004, 1)
+position = Vector2(-29, -18)
+scale = Vector2(2, 2)
+texture = ExtResource("2_8kw0n")
+
+[node name="PointLight2D" type="PointLight2D" parent="Background" unique_id=321090980]
+position = Vector2(-19, 0)
+blend_mode = 1
+texture = SubResource("GradientTexture2D_shbny")
+texture_scale = 26.93
+
+[node name="LinksHolder" type="Node" parent="." unique_id=1848316638]
+
+[node name="Link" type="Line2D" parent="LinksHolder" unique_id=1393877734]
+visible = false
+position = Vector2(-509, 24)
+points = PackedVector2Array(0, 0, 360, 0)
+script = ExtResource("5_f1v21")
+
+[node name="Area2D" type="Area2D" parent="LinksHolder/Link" unique_id=718469868]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="LinksHolder/Link/Area2D" unique_id=1667563270]
+polygon = PackedVector2Array(360, 5, 360, -5, 0, -5, 0, 5)
+
+[node name="PinsHolder" type="Node" parent="." unique_id=613010887]
+
+[node name="Pin" parent="PinsHolder" unique_id=1646836186 groups=["Pins"] instance=ExtResource("7_x4t65")]
+position = Vector2(-2388, -998)
+
+[node name="Pin2" parent="PinsHolder" unique_id=1437586659 groups=["Pins"] instance=ExtResource("7_x4t65")]
+position = Vector2(-1812, -1292)
+
+[node name="EvidenceHolder" type="Node" parent="." unique_id=980159522]
+
+[node name="Evidence" parent="EvidenceHolder" unique_id=782376683 groups=["Evidence"] instance=ExtResource("4_ga1kr")]
+position = Vector2(-2037, -1054)
+
+[node name="PlayerHolder" type="Node" parent="." unique_id=860254363]
+
+[node name="Player" parent="PlayerHolder" unique_id=481904291 instance=ExtResource("4_w0eeu")]
+position = Vector2(-99, -100)
+player_colour = Color(1, 0.4117647, 1, 1)
+
+[node name="FogMask" type="Panel" parent="PlayerHolder/Player" unique_id=1920529641]
+z_index = 60
+z_as_relative = false
+custom_minimum_size = Vector2(1280, 1280)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -6400.0
+offset_top = -6400.0
+offset_right = 6400.0
+offset_bottom = 6400.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(6400, 6400)
+theme_override_styles/panel = SubResource("StyleBoxTexture_fnxxm")
+
+[node name="FakePin" type="Node2D" parent="." unique_id=2114708943]
+visible = false
+z_index = 30
+position = Vector2(-197, -313)
+script = ExtResource("7_yi8c2")
+
+[node name="Sprite2D" type="Sprite2D" parent="FakePin" unique_id=1224908607]
+modulate = Color(0, 1, 0, 0.47058824)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("7_ge02r")
+
+[node name="Area2D" type="Area2D" parent="FakePin" unique_id=1630127971]
+scale = Vector2(1.8225001, 1.8225001)
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FakePin/Area2D" unique_id=2138251074]
+shape = SubResource("CircleShape2D_w0eeu")
+
+[node name="FakeLink" type="Line2D" parent="." unique_id=2066467814]
+visible = false
+position = Vector2(-509, 24)
+points = PackedVector2Array(0, 0, 329, 14)
+default_color = Color(0, 1, 0, 0.5019608)
+script = ExtResource("9_mosf5")
+
+[node name="Raycaster" type="RayCast2D" parent="." unique_id=1650821114]
+enabled = false
+collision_mask = 66048
+collide_with_areas = true
+collide_with_bodies = false
+script = ExtResource("9_yi8c2")
+metadata/_custom_type_script = "uid://b0s0k2au70ro8"
+
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_CreateEvidence" to="." method="_create_evidence_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_CreateEvidenceRepeating" to="." method="_create_evidence_repeating_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_HideEvidence" to="." method="_hide_evidence_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_RevealEvidence" to="." method="_reveal_evidence_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_CreatePin" to="." method="_create_pin_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_CreatePinOnEvidence" to="." method="_create_pin_on_evidence_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_CreateLink" to="." method="_create_link_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_CreateLinkAiming" to="." method="_create_link_by_aim_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_ThreadLink" to="." method="_thread_link_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_UnthreadLink" to="." method="_unthread_link_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_CreatePlayer" to="." method="_create_player_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_CreatePlayerOnPin" to="." method="_create_player_on_pin_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_MovePlayerForced" to="." method="_move_player_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_Backtrack" to="." method="_backtrack_player_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_BacktrackRepeating" to="." method="_backtrack_player_on_button_press" binds= [true]]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/LeftButtons/Btn_TestChain" to="." method="_test_chain_on_button_press"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Buttons/RightButtons/Btn_AddRandomDomain" to="." method="_add_random_domain_on_button_press"]
